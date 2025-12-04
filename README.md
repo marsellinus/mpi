@@ -1,91 +1,91 @@
-# Hybrid Parallel Matrix Multiplication
+# Perkalian Matriks Paralel Hybrid
 ## Analisis Komparatif: Row Striping vs Block Striping
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![MPI](https://img.shields.io/badge/MPI-mpi4py-green.svg)](https://mpi4py.readthedocs.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A comprehensive comparative analysis of **hybrid parallel matrix multiplication** using **MPI (Message Passing Interface)** and **Python multiprocessing**. This project implements and benchmarks two data distribution strategies:
+Analisis komparatif komprehensif tentang **perkalian matriks paralel hybrid** menggunakan **MPI (Message Passing Interface)** dan **Python multiprocessing**. Proyek ini mengimplementasikan dan membandingkan dua strategi distribusi data:
 
-1. **Row Striping** - Distributes rows of matrix A across processes
-2. **Block Striping** - Distributes blocks of matrix A using 2D process grid
+1. **Row Striping** - Mendistribusikan baris matriks A ke seluruh proses
+2. **Block Striping** - Mendistribusikan blok matriks A menggunakan grid proses 2D
 
 ---
 
-## 📋 Table of Contents
+## 📋 Daftar Isi
 
-- [Features](#-features)
-- [Project Structure](#-project-structure)
-- [Requirements](#-requirements)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Methodology](#-methodology)
-- [Timing Metrics](#-timing-metrics)
+- [Fitur](#-fitur)
+- [Struktur Proyek](#-struktur-proyek)
+- [Kebutuhan Sistem](#-kebutuhan-sistem)
+- [Instalasi](#-instalasi)
+- [Cara Penggunaan](#-cara-penggunaan)
+- [Metodologi](#-metodologi)
+- [Metrik Waktu](#-metrik-waktu)
 - [Benchmarking](#-benchmarking)
-- [Results Visualization](#-results-visualization)
-- [Example Output](#-example-output)
-- [Failure Simulation](#-failure-simulation)
-- [Performance Analysis](#-performance-analysis)
+- [Visualisasi Hasil](#-visualisasi-hasil)
+- [Contoh Output](#-contoh-output)
+- [Simulasi Kegagalan](#-simulasi-kegagalan)
+- [Analisis Performa](#-analisis-performa)
 
 ---
 
-## ✨ Features
+## ✨ Fitur
 
-- **Hybrid Parallelism**: Combines distributed-memory (MPI) and shared-memory (multiprocessing) parallelism
-- **Two Distribution Strategies**: 
-  - Row striping for fine-grained row distribution
-  - Block striping with 2D process grid optimization
-- **Comprehensive Timing**: Measures scatter, broadcast, compute, gather, and total execution time
-- **Automated Benchmarking**: Scripts for testing multiple process counts
-- **Rich Visualization**: Generates 6+ comparative plots and summary tables
-- **Failure Simulation**: Optional node failure testing for fault tolerance analysis
-- **Scalable**: Supports matrix sizes from 1024×1024 to 4096×4096 and beyond
+- **Paralelisme Hybrid**: Menggabungkan paralelisme distributed-memory (MPI) dan shared-memory (multiprocessing)
+- **Dua Strategi Distribusi**: 
+  - Row striping untuk distribusi baris yang detail
+  - Block striping dengan optimasi grid proses 2D
+- **Pengukuran Waktu Komprehensif**: Mengukur waktu scatter, broadcast, compute, gather, dan total eksekusi
+- **Benchmarking Otomatis**: Skrip untuk menguji berbagai jumlah proses
+- **Visualisasi Lengkap**: Menghasilkan 6+ plot komparatif dan tabel ringkasan
+- **Simulasi Kegagalan**: Testing kegagalan node opsional untuk analisis fault tolerance
+- **Skalabel**: Mendukung ukuran matriks dari 1024×1024 hingga 4096×4096 dan lebih besar
 
 ---
 
-## 📁 Project Structure
+## 📁 Struktur Proyek
 
 ```
 project/
 ├── src/
-│   ├── matrix_row_striping.py      # Row striping implementation
-│   ├── matrix_block_striping.py    # Block striping implementation
-│   └── utils.py                     # Utility functions and helpers
+│   ├── matrix_row_striping.py      # Implementasi row striping
+│   ├── matrix_block_striping.py    # Implementasi block striping
+│   └── utils.py                     # Fungsi utilitas dan helper
 ├── scripts/
-│   ├── run_benchmark.sh             # Bash benchmark script (Linux/Mac)
-│   └── run_benchmark.ps1            # PowerShell benchmark script (Windows)
+│   ├── run_benchmark.sh             # Skrip benchmark Bash (Linux/Mac)
+│   └── run_benchmark.ps1            # Skrip benchmark PowerShell (Windows)
 ├── results/
-│   ├── row_results.csv              # Row striping timing results
-│   ├── block_results.csv            # Block striping timing results
-│   └── *.png                        # Generated plots
-├── plot_results.py                  # Visualization script
-├── requirements.txt                 # Python dependencies
-└── README.md                        # This file
+│   ├── row_results.csv              # Hasil waktu row striping
+│   ├── block_results.csv            # Hasil waktu block striping
+│   └── *.png                        # Plot yang dihasilkan
+├── plot_results.py                  # Skrip visualisasi
+├── requirements.txt                 # Dependensi Python
+└── README.md                        # File ini
 ```
 
 ---
 
-## 🔧 Requirements
+## 🔧 Kebutuhan Sistem
 
-### System Requirements
-- **Python**: 3.8 or higher
-- **MPI Implementation**: 
-  - **Linux/Mac**: OpenMPI, MPICH, or Intel MPI
+### Kebutuhan Sistem
+- **Python**: 3.8 atau lebih tinggi
+- **Implementasi MPI**: 
+  - **Linux/Mac**: OpenMPI, MPICH, atau Intel MPI
   - **Windows**: Microsoft MPI (MS-MPI)
-- **RAM**: Minimum 8GB (16GB+ recommended for large matrices)
-- **CPU**: Multi-core processor (4+ cores recommended)
+- **RAM**: Minimum 8GB (16GB+ direkomendasikan untuk matriks besar)
+- **CPU**: Prosesor multi-core (4+ core direkomendasikan)
 
-### Python Packages
-- `numpy >= 1.21.0` - Numerical computing
-- `mpi4py >= 3.1.0` - MPI Python bindings
-- `matplotlib >= 3.5.0` - Plotting and visualization
-- `pandas >= 1.3.0` - Data analysis and CSV handling
+### Paket Python
+- `numpy >= 1.21.0` - Komputasi numerik
+- `mpi4py >= 3.1.0` - Binding Python untuk MPI
+- `matplotlib >= 3.5.0` - Plotting dan visualisasi
+- `pandas >= 1.3.0` - Analisis data dan penanganan CSV
 
 ---
 
-## 📦 Installation
+## 📦 Instalasi
 
-### Step 1: Install MPI
+### Langkah 1: Instalasi MPI
 
 #### Linux (Ubuntu/Debian)
 ```bash
@@ -107,18 +107,18 @@ brew install open-mpi
 1. Download and install [Microsoft MPI](https://www.microsoft.com/en-us/download/details.aspx?id=105289)
 2. Install both `msmpisetup.exe` (runtime) and `msmpisdk.msi` (SDK)
 
-### Step 2: Clone or Create Project
+### Langkah 2: Clone atau Buat Proyek
 
 ```bash
-# Navigate to your workspace
+# Navigasi ke workspace Anda
 cd "d:\belajar\pararel\kelompok py"
 
-# Or clone if from repository
+# Atau clone jika dari repository
 # git clone <repository-url>
 # cd <project-directory>
 ```
 
-### Step 3: Create Virtual Environment (Recommended)
+### Langkah 3: Buat Virtual Environment (Direkomendasikan)
 
 ```bash
 # Linux/Mac
@@ -130,13 +130,13 @@ python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-### Step 4: Install Python Dependencies
+### Langkah 4: Instalasi Dependensi Python
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 5: Verify Installation
+### Langkah 5: Verifikasi Instalasi
 
 ```bash
 # Test MPI installation
@@ -149,9 +149,9 @@ python -c "from mpi4py import MPI; print(f'MPI Version: {MPI.Get_version()}')"
 
 ---
 
-## 🚀 Usage
+## 🚀 Cara Penggunaan
 
-### Basic Execution
+### Eksekusi Dasar
 
 #### Row Striping
 ```bash
@@ -171,74 +171,74 @@ mpirun -np 4 python3 src/matrix_block_striping.py --N 1024 --workers 2
 mpiexec -n 4 python src\matrix_block_striping.py --N 1024 --workers 2
 ```
 
-### Command-Line Arguments
+### Argumen Command-Line
 
-| Argument | Type | Default | Description |
-|----------|------|---------|-------------|
-| `--N` | int | 1024 | Matrix dimension (N×N) |
-| `--workers` | int | 2 | Number of local multiprocessing workers |
-| `--simulate-failure` | int | None | Rank to simulate node failure |
+| Argumen | Tipe | Default | Deskripsi |
+|---------|------|---------|--------|
+| `--N` | int | 1024 | Dimensi matriks (N×N) |
+| `--workers` | int | 2 | Jumlah worker multiprocessing lokal |
+| `--simulate-failure` | int | None | Rank untuk simulasi kegagalan node |
 
-### Examples
+### Contoh
 
 ```bash
-# Test with 2048×2048 matrix on 8 processes with 4 workers each
+# Test dengan matriks 2048×2048 pada 8 proses dengan 4 worker masing-masing
 mpirun -np 8 python3 src/matrix_row_striping.py --N 2048 --workers 4
 
-# Full benchmark with 4096×4096 matrix
+# Benchmark penuh dengan matriks 4096×4096
 mpirun -np 16 python3 src/matrix_block_striping.py --N 4096 --workers 4
 
-# Simulate failure at rank 2
+# Simulasi kegagalan pada rank 2
 mpirun -np 4 python3 src/matrix_row_striping.py --N 1024 --workers 2 --simulate-failure 2
 ```
 
 ---
 
-## 🧪 Methodology
+## 🧪 Metodologi
 
-### Row Striping Approach
+### Pendekatan Row Striping
 
-1. **Distribution**: Matrix A is divided into horizontal strips (rows)
-2. **Scatter**: Root process scatters row chunks using `MPI.Scatterv`
-3. **Broadcast**: Full matrix B is broadcast to all processes
-4. **Compute**: Each process computes `A_local @ B` using multiprocessing
-5. **Gather**: Results are gathered back using `MPI.Gatherv`
+1. **Distribusi**: Matriks A dibagi menjadi strip horizontal (baris)
+2. **Scatter**: Proses root menyebarkan potongan baris menggunakan `MPI.Scatterv`
+3. **Broadcast**: Matriks B lengkap di-broadcast ke semua proses
+4. **Compute**: Setiap proses menghitung `A_local @ B` menggunakan multiprocessing
+5. **Gather**: Hasil dikumpulkan kembali menggunakan `MPI.Gatherv`
 
-**Advantages**: 
-- Simple load balancing
-- Good for rectangular matrices
-- Efficient for large row counts
+**Keuntungan**: 
+- Load balancing yang sederhana
+- Baik untuk matriks persegi panjang
+- Efisien untuk jumlah baris yang besar
 
-**Mathematical Representation**:
+**Representasi Matematis**:
 ```
-Process i receives rows [start_i : end_i] where:
+Proses i menerima baris [start_i : end_i] dimana:
   start_i = i * (N/P) + min(i, N%P)
-  count_i = (N/P) + (1 if i < N%P else 0)
+  count_i = (N/P) + (1 jika i < N%P selain itu 0)
 ```
 
-### Block Striping Approach
+### Pendekatan Block Striping
 
-1. **Grid Formation**: Creates pr × pc process grid where pr*pc = P
-2. **Distribution**: Matrix A is divided into blocks
-3. **Scatter**: Root process distributes blocks using `MPI.Scatterv`
-4. **Broadcast**: Full matrix B is broadcast to all processes
-5. **Compute**: Each process multiplies its block using multiprocessing
-6. **Gather**: Block results are gathered using `MPI.Gatherv`
+1. **Formasi Grid**: Membuat grid proses pr × pc dimana pr*pc = P
+2. **Distribusi**: Matriks A dibagi menjadi blok-blok
+3. **Scatter**: Proses root mendistribusikan blok menggunakan `MPI.Scatterv`
+4. **Broadcast**: Matriks B lengkap di-broadcast ke semua proses
+5. **Compute**: Setiap proses mengalikan bloknya menggunakan multiprocessing
+6. **Gather**: Hasil blok dikumpulkan menggunakan `MPI.Gatherv`
 
-**Advantages**:
-- Better cache locality for 2D access patterns
-- Scalable for large process counts
-- Optimizes communication patterns
+**Keuntungan**:
+- Cache locality yang lebih baik untuk pola akses 2D
+- Skalabel untuk jumlah proses yang besar
+- Mengoptimalkan pola komunikasi
 
-**Process Grid Calculation**:
+**Perhitungan Grid Proses**:
 ```python
 pr = closest_divisor_to_sqrt(P)
 pc = P / pr
 ```
 
-### Local Computation
+### Komputasi Lokal
 
-Both methods use **multiprocessing** for intra-node parallelism:
+Kedua metode menggunakan **multiprocessing** untuk paralelisme intra-node:
 
 ```python
 def parallel_matmul_local(A_local, B, n_workers):
@@ -254,12 +254,12 @@ def parallel_matmul_local(A_local, B, n_workers):
 
 ---
 
-## ⏱️ Timing Metrics
+## ⏱️ Metrik Waktu
 
-Each implementation measures the following metrics:
+Setiap implementasi mengukur metrik berikut:
 
-### 1. **Scatter Time**
-Time to distribute matrix A portions from root to all processes
+### 1. **Waktu Scatter**
+Waktu untuk mendistribusikan bagian matriks A dari root ke semua proses
 ```python
 t_start = now()
 comm.Scatterv([A, sendcounts, displs, MPI.DOUBLE], A_local, root=0)
@@ -267,8 +267,8 @@ t_end = now()
 scatter_time = t_end - t_start
 ```
 
-### 2. **Broadcast Time**
-Time to broadcast full matrix B to all processes
+### 2. **Waktu Broadcast**
+Waktu untuk broadcast matriks B lengkap ke semua proses
 ```python
 t_start = now()
 comm.Bcast(B, root=0)
@@ -276,8 +276,8 @@ t_end = now()
 broadcast_time = t_end - t_start
 ```
 
-### 3. **Compute Time**
-Pure local computation time (multiprocessing)
+### 3. **Waktu Komputasi**
+Waktu komputasi lokal murni (multiprocessing)
 ```python
 t_start = now()
 C_local = parallel_matmul_local(A_local, B, n_workers)
@@ -285,8 +285,8 @@ t_end = now()
 compute_time = t_end - t_start
 ```
 
-### 4. **Gather Time**
-Time to collect results back to root
+### 4. **Waktu Gather**
+Waktu untuk mengumpulkan hasil kembali ke root
 ```python
 t_start = now()
 comm.Gatherv(C_local, [C, sendcounts, displs, MPI.DOUBLE], root=0)
@@ -294,14 +294,14 @@ t_end = now()
 gather_time = t_end - t_start
 ```
 
-### 5. **Total Time**
-End-to-end execution time
+### 5. **Waktu Total**
+Waktu eksekusi end-to-end
 ```python
 communication_time = scatter_time + broadcast_time + gather_time
 total_time = communication_time + compute_time
 ```
 
-All processes report their maximum time using `MPI.Allreduce`:
+Semua proses melaporkan waktu maksimum mereka menggunakan `MPI.Allreduce`:
 ```python
 scatter_time = comm.allreduce(scatter_time, op=MPI.MAX)
 ```
@@ -310,46 +310,46 @@ scatter_time = comm.allreduce(scatter_time, op=MPI.MAX)
 
 ## 📊 Benchmarking
 
-### Automated Benchmark Runner
+### Runner Benchmark Otomatis
 
 #### Linux/Mac (Bash)
 ```bash
-# Edit configuration in scripts/run_benchmark.sh
+# Edit konfigurasi di scripts/run_benchmark.sh
 MATRIX_SIZE=1024
 WORKERS=4
 PROCESS_COUNTS=(2 4 8 16)
 
-# Run benchmark
+# Jalankan benchmark
 bash scripts/run_benchmark.sh
 ```
 
 #### Windows (PowerShell)
 ```powershell
-# Edit configuration in scripts/run_benchmark.ps1
+# Edit konfigurasi di scripts/run_benchmark.ps1
 $MATRIX_SIZE = 1024
 $WORKERS = 4
 $PROCESS_COUNTS = @(2, 4, 8, 16)
 
-# Run benchmark
+# Jalankan benchmark
 .\scripts\run_benchmark.ps1
 ```
 
-### Manual Benchmarking
+### Benchmarking Manual
 
 ```bash
-# Test different process counts
+# Test berbagai jumlah proses
 for P in 2 4 8 16; do
-  echo "Testing with $P processes..."
+  echo "Testing dengan $P proses..."
   mpirun -np $P python3 src/matrix_row_striping.py --N 1024 --workers 4
   mpirun -np $P python3 src/matrix_block_striping.py --N 1024 --workers 4
 done
 ```
 
-### Results Storage
+### Penyimpanan Hasil
 
-Results are automatically saved to CSV files:
-- `results/row_results.csv` - Row striping results
-- `results/block_results.csv` - Block striping results
+Hasil otomatis disimpan ke file CSV:
+- `results/row_results.csv` - Hasil row striping
+- `results/block_results.csv` - Hasil block striping
 
 **CSV Format**:
 ```csv
@@ -359,49 +359,49 @@ Row,4,4,1024,0.021534,0.043210,0.982341,0.018923,0.083667,1.066008
 
 ---
 
-## 📈 Results Visualization
+## 📈 Visualisasi Hasil
 
-### Generate Plots
+### Generate Plot
 
 ```bash
 python plot_results.py
 ```
 
-### Generated Visualizations
+### Visualisasi yang Dihasilkan
 
 1. **total_time_comparison.png**
-   - Line plot comparing total execution time
-   - Row vs Block striping across process counts
+   - Line plot membandingkan waktu eksekusi total
+   - Row vs Block striping di berbagai jumlah proses
 
 2. **compute_vs_communication.png**
-   - Bar charts showing compute vs communication time
-   - Separate plots for each method
+   - Bar chart menampilkan waktu compute vs komunikasi
+   - Plot terpisah untuk setiap metode
 
 3. **communication_breakdown.png**
-   - Detailed breakdown: scatter, broadcast, gather
-   - Side-by-side comparison
+   - Breakdown detail: scatter, broadcast, gather
+   - Perbandingan side-by-side
 
 4. **speedup_analysis.png**
-   - Speedup relative to baseline (smallest P)
-   - Includes ideal speedup line
+   - Speedup relatif terhadap baseline (P terkecil)
+   - Termasuk garis speedup ideal
 
 5. **efficiency_analysis.png**
-   - Parallel efficiency percentage
-   - Shows scaling efficiency
+   - Persentase efisiensi paralel
+   - Menampilkan efisiensi scaling
 
 6. **time_percentage.png**
-   - Stacked bar chart showing percentage breakdown
-   - Compute vs communication ratios
+   - Stacked bar chart menampilkan breakdown persentase
+   - Rasio compute vs komunikasi
 
 7. **summary_table.txt**
-   - Text-based summary of all results
-   - Formatted table with all metrics
+   - Ringkasan berbasis teks dari semua hasil
+   - Tabel terformat dengan semua metrik
 
 ---
 
-## 📝 Example Output
+## 📝 Contoh Output
 
-### Console Output (Row Striping)
+### Output Console (Row Striping)
 
 ```
 [Row Striping] Starting with 4 processes, 4 workers each
@@ -428,25 +428,25 @@ python plot_results.py
 [Row Striping] Results saved to results/row_results.csv
 ```
 
-### Sample Benchmark Results
+### Contoh Hasil Benchmark
 
-| Method | Processes | Workers | Matrix Size | Total Time (s) | Speedup | Efficiency |
-|--------|-----------|---------|-------------|----------------|---------|------------|
-| Row    | 2         | 4       | 1024        | 1.834          | 1.00×   | 100.0%     |
-| Row    | 4         | 4       | 1024        | 1.066          | 1.72×   | 86.0%      |
-| Row    | 8         | 4       | 1024        | 0.623          | 2.94×   | 73.5%      |
-| Block  | 2         | 4       | 1024        | 1.821          | 1.00×   | 100.0%     |
-| Block  | 4         | 4       | 1024        | 1.043          | 1.75×   | 87.5%      |
-| Block  | 8         | 4       | 1024        | 0.598          | 3.05×   | 76.2%      |
+| Metode | Proses | Workers | Ukuran Matriks | Waktu Total (s) | Speedup | Efisiensi |
+|--------|--------|---------|----------------|-----------------|---------|----------|
+| Row    | 2      | 4       | 1024           | 1.834           | 1.00×   | 100.0%   |
+| Row    | 4      | 4       | 1024           | 1.066           | 1.72×   | 86.0%    |
+| Row    | 8      | 4       | 1024           | 0.623           | 2.94×   | 73.5%    |
+| Block  | 2      | 4       | 1024           | 1.821           | 1.00×   | 100.0%   |
+| Block  | 4      | 4       | 1024           | 1.043           | 1.75×   | 87.5%    |
+| Block  | 8      | 4       | 1024           | 0.598           | 3.05×   | 76.2%    |
 
 ---
 
-## 🔧 Failure Simulation
+## 🔧 Simulasi Kegagalan
 
-Test fault tolerance by simulating node failures:
+Test fault tolerance dengan mensimulasikan kegagalan node:
 
 ```bash
-# Simulate failure at rank 2
+# Simulasi kegagalan pada rank 2
 mpirun -np 4 python3 src/matrix_row_striping.py --N 1024 --workers 2 --simulate-failure 2
 ```
 
@@ -456,53 +456,53 @@ mpirun -np 4 python3 src/matrix_row_striping.py --N 1024 --workers 2 --simulate-
 [ERROR] MPI process terminated unexpectedly
 ```
 
-**Use Cases**:
-- Testing error handling
-- Analyzing impact of node failures
-- Developing fault-tolerant strategies
+**Kasus Penggunaan**:
+- Testing penanganan error
+- Menganalisis dampak kegagalan node
+- Mengembangkan strategi fault-tolerant
 
 ---
 
-## 📊 Performance Analysis
+## 📊 Analisis Performa
 
-### Key Observations
+### Observasi Utama
 
-#### Communication Overhead
-- **Row Striping**: Lower scatter/gather overhead for contiguous rows
-- **Block Striping**: Potentially higher overhead but better cache locality
+#### Overhead Komunikasi
+- **Row Striping**: Overhead scatter/gather lebih rendah untuk baris yang kontinu
+- **Block Striping**: Overhead berpotensi lebih tinggi tapi cache locality lebih baik
 
-#### Scalability
-- **Strong Scaling**: Fixed problem size, increasing processes
-- **Expected**: Near-linear speedup until communication dominates
-- **Bottleneck**: Broadcast of matrix B (O(N²) data)
+#### Skalabilitas
+- **Strong Scaling**: Ukuran masalah tetap, proses bertambah
+- **Ekspektasi**: Speedup mendekati linear sampai komunikasi mendominasi
+- **Bottleneck**: Broadcast matriks B (data O(N²))
 
-#### Optimal Configuration
+#### Konfigurasi Optimal
 ```
-Best Performance = f(Matrix_Size, Processes, Workers)
+Performa Terbaik = f(Ukuran_Matriks, Proses, Workers)
 ```
 
-**General Guidelines**:
-- Small matrices (≤1024): Use 2-4 processes, 2-4 workers
-- Medium matrices (2048): Use 4-8 processes, 4 workers
-- Large matrices (≥4096): Use 8-16 processes, 4-8 workers
+**Panduan Umum**:
+- Matriks kecil (≤1024): Gunakan 2-4 proses, 2-4 workers
+- Matriks sedang (2048): Gunakan 4-8 proses, 4 workers
+- Matriks besar (≥4096): Gunakan 8-16 proses, 4-8 workers
 
-#### Amdahl's Law Analysis
+#### Analisis Hukum Amdahl
 ```
 Speedup_max = 1 / (s + p/P)
-where:
-  s = serial fraction (communication)
-  p = parallel fraction (compute)
-  P = number of processes
+dimana:
+  s = fraksi serial (komunikasi)
+  p = fraksi paralel (komputasi)
+  P = jumlah proses
 ```
 
 ---
 
 ## 🛠️ Troubleshooting
 
-### Common Issues
+### Masalah Umum
 
 #### 1. `mpirun: command not found`
-**Solution**: Install MPI implementation
+**Solusi**: Instalasi implementasi MPI
 ```bash
 # Linux
 sudo apt-get install openmpi-bin
@@ -510,85 +510,85 @@ sudo apt-get install openmpi-bin
 # Mac
 brew install open-mpi
 
-# Windows - Install MS-MPI from Microsoft
+# Windows - Install MS-MPI dari Microsoft
 ```
 
 #### 2. `ImportError: No module named 'mpi4py'`
-**Solution**: Install Python packages
+**Solusi**: Instalasi paket Python
 ```bash
 pip install mpi4py
 ```
 
-#### 3. Memory errors with large matrices
-**Solution**: Reduce matrix size or increase RAM
+#### 3. Error memory dengan matriks besar
+**Solusi**: Kurangi ukuran matriks atau tambah RAM
 ```bash
-# Use smaller test size
+# Gunakan ukuran test yang lebih kecil
 mpirun -np 4 python3 src/matrix_row_striping.py --N 512 --workers 2
 ```
 
-#### 4. Windows: `mpiexec` not recognized
-**Solution**: Add MS-MPI to PATH
+#### 4. Windows: `mpiexec` tidak dikenali
+**Solusi**: Tambahkan MS-MPI ke PATH
 ```powershell
 $env:PATH += ";C:\Program Files\Microsoft MPI\Bin"
 ```
 
 ---
 
-## 📚 References
+## 📚 Referensi
 
-### Academic Papers
+### Makalah Akademik
 - Fox, G. C., et al. (1994). *Solving Problems on Concurrent Processors*
 - Kumar, V., et al. (1994). *Introduction to Parallel Computing*
 
-### Documentation
-- [mpi4py Documentation](https://mpi4py.readthedocs.io/)
+### Dokumentasi
+- [Dokumentasi mpi4py](https://mpi4py.readthedocs.io/)
 - [Python Multiprocessing](https://docs.python.org/3/library/multiprocessing.html)
-- [NumPy Documentation](https://numpy.org/doc/)
+- [Dokumentasi NumPy](https://numpy.org/doc/)
 
-### MPI Standards
+### Standar MPI
 - [MPI Forum](https://www.mpi-forum.org/)
 - [OpenMPI](https://www.open-mpi.org/)
 
 ---
 
-## 🤝 Contributing
+## 🤝 Kontribusi
 
-Contributions are welcome! Areas for improvement:
-- True 2D block distribution algorithm
-- Cannon's algorithm implementation
-- GPU acceleration (CUDA/OpenCL)
-- Fault tolerance mechanisms
+Kontribusi sangat diterima! Area untuk pengembangan:
+- Algoritma distribusi blok 2D yang sebenarnya
+- Implementasi algoritma Cannon
+- Akselerasi GPU (CUDA/OpenCL)
+- Mekanisme fault tolerance
 - Dynamic load balancing
 
 ---
 
-## 📄 License
+## 📄 Lisensi
 
-This project is licensed under the MIT License.
-
----
-
-## 👥 Authors
-
-Created for comparative analysis of hybrid parallel computing approaches in matrix multiplication.
+Proyek ini dilisensikan di bawah MIT License.
 
 ---
 
-## 🙏 Acknowledgments
+## 👥 Penulis
 
-- OpenMPI and MPICH communities
-- mpi4py developers
-- Python multiprocessing contributors
+Dibuat untuk analisis komparatif pendekatan hybrid parallel computing dalam perkalian matriks.
 
 ---
 
-## 📞 Support
+## 🙏 Ucapan Terima Kasih
 
-For issues, questions, or contributions:
-1. Check existing documentation
-2. Review troubleshooting section
-3. Open an issue on the repository
+- Komunitas OpenMPI dan MPICH
+- Developer mpi4py
+- Kontributor Python multiprocessing
 
 ---
 
-**Happy Parallel Computing! 🚀**
+## 📞 Dukungan
+
+Untuk masalah, pertanyaan, atau kontribusi:
+1. Periksa dokumentasi yang ada
+2. Tinjau bagian troubleshooting
+3. Buka issue pada repository
+
+---
+
+**Selamat Parallel Computing! 🚀**
