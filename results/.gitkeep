@@ -1,0 +1,10 @@
+# Results Directory
+
+This directory stores the output from benchmark runs:
+
+- `row_results.csv` - Timing data from row striping experiments
+- `block_results.csv` - Timing data from block striping experiments
+- `*.png` - Generated visualization plots
+- `summary_table.txt` - Formatted summary table
+
+Run benchmarks to populate this directory.
