@@ -53,7 +53,7 @@ project/
 │   └── utils.py                     # Fungsi utilitas dan helper
 ├── scripts/
 │   ├── run_benchmark.sh             # Skrip benchmark Bash (Linux/Mac)
-│   └── run_benchmark.ps1            # Skrip benchmark PowerShell (Windows)
+│   └── run_benchmark.ps1            # Skrip benchmark PowerShell (Windows, auto-optimized)
 ├── results/
 │   ├── row_results.csv              # Hasil waktu row striping
 │   ├── block_results.csv            # Hasil waktu block striping
@@ -62,6 +62,8 @@ project/
 ├── requirements.txt                 # Dependensi Python
 └── README.md                        # File ini
 ```
+
+**Note**: `run_benchmark.ps1` untuk Windows otomatis menyesuaikan jumlah workers berdasarkan jumlah proses untuk menghindari MS-MPI bootstrap queue error.
 
 ---
 
@@ -325,12 +327,12 @@ bash scripts/run_benchmark.sh
 
 #### Windows (PowerShell)
 ```powershell
-# Edit konfigurasi di scripts/run_benchmark.ps1
+# Script otomatis menyesuaikan workers untuk Windows
+# Edit konfigurasi di scripts/run_benchmark.ps1 jika perlu
 $MATRIX_SIZE = 1024
-$WORKERS = 4
-$PROCESS_COUNTS = @(2, 4, 8, 16)
+$PROCESS_COUNTS = @(2, 4, 8)
 
-# Jalankan benchmark
+# Jalankan benchmark (auto-adjust workers)
 .\scripts\run_benchmark.ps1
 ```
 

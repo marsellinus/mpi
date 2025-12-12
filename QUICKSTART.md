@@ -50,6 +50,7 @@ mpirun -np 4 python3 src/matrix_block_striping.py --N 1024 --workers 2
 
 #### Windows
 ```powershell
+# Auto-adjusts workers for Windows stability
 .\scripts\run_benchmark.ps1
 ```
 

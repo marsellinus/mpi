@@ -1,20 +1,19 @@
 # Automated Benchmark Runner for Hybrid Parallel Matrix Multiplication
 # PowerShell version for Windows
-# Tests both row and block striping with different process counts
+# Automatically adjusts worker count based on number of MPI processes for stability
 
 # Configuration
 $MATRIX_SIZE = 1024  # Use 1024 for testing, 4096 for full benchmark
-$WORKERS = 4         # Number of local multiprocessing workers
-$PROCESS_COUNTS = @(2, 4, 8, 16)
+$PROCESS_COUNTS = @(2, 4, 8)  # Tested and working on Windows
 
 Write-Host "========================================" -ForegroundColor Blue
 Write-Host "  Hybrid Parallel Matrix Multiplication" -ForegroundColor Blue
-Write-Host "  Benchmark Runner" -ForegroundColor Blue
+Write-Host "  Benchmark Runner (Windows-Optimized)" -ForegroundColor Blue
 Write-Host "========================================" -ForegroundColor Blue
 Write-Host ""
 Write-Host "Matrix Size: $MATRIX_SIZE×$MATRIX_SIZE" -ForegroundColor Green
-Write-Host "Local Workers: $WORKERS" -ForegroundColor Green
 Write-Host "Process Counts: $($PROCESS_COUNTS -join ', ')" -ForegroundColor Green
+Write-Host "Workers: Auto-adjusted (P≤2: 4 workers, P>2: 1 worker)" -ForegroundColor Yellow
 Write-Host ""
 
 # Check if mpiexec is available
@@ -35,9 +34,19 @@ if (Test-Path "results\block_results.csv") { Remove-Item "results\block_results.
 
 # Run benchmarks
 foreach ($P in $PROCESS_COUNTS) {
+    # Auto-adjust workers: more processes = fewer workers (Windows MS-MPI limitation)
+    if ($P -le 2) {
+        $WORKERS = 4
+        $STATUS = "Hybrid (4 workers/process)"
+    } else {
+        $WORKERS = 1
+        $STATUS = "MPI-Dominant (1 worker/process)"
+    }
+    
     Write-Host ""
     Write-Host "============================================" -ForegroundColor Green
-    Write-Host "Testing with $P processes" -ForegroundColor Green
+    Write-Host "Testing with $P processes, $WORKERS workers" -ForegroundColor Green
+    Write-Host "Configuration: $STATUS" -ForegroundColor Yellow
     Write-Host "============================================" -ForegroundColor Green
     
     # Row Striping
@@ -47,6 +56,7 @@ foreach ($P in $PROCESS_COUNTS) {
     
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Row striping failed with $P processes" -ForegroundColor Red
+        Write-Host "Tip: Try reducing workers or using fewer processes" -ForegroundColor Yellow
     } else {
         Write-Host "Row striping completed successfully" -ForegroundColor Green
     }
@@ -60,6 +70,7 @@ foreach ($P in $PROCESS_COUNTS) {
     
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Block striping failed with $P processes" -ForegroundColor Red
+        Write-Host "Tip: Try reducing workers or using fewer processes" -ForegroundColor Yellow
     } else {
         Write-Host "Block striping completed successfully" -ForegroundColor Green
     }
@@ -78,4 +89,7 @@ Write-Host "  - results\block_results.csv" -ForegroundColor Blue
 Write-Host ""
 Write-Host "To visualize results, run:"
 Write-Host "  python plot_results.py" -ForegroundColor Blue
+Write-Host ""
+Write-Host "Note: Script uses auto-adjusted workers for Windows stability." -ForegroundColor Yellow
+Write-Host "      P≤2: 4 workers (hybrid), P>2: 1 worker (MPI-dominant)" -ForegroundColor Yellow
 Write-Host ""

@@ -51,6 +51,10 @@ def parallel_matmul_local(A_local, B, n_workers):
     if rows == 0:
         return A_local @ B
     
+    # For small workloads, don't use multiprocessing to avoid overhead
+    if rows < n_workers * 10:
+        return np.dot(A_local, B)
+    
     # Split rows among workers
     chunk_size = max(1, rows // n_workers)
     chunks = []
@@ -59,12 +63,18 @@ def parallel_matmul_local(A_local, B, n_workers):
         end = min(i + chunk_size, rows)
         chunks.append((A_local[i:end], B))
     
-    # Use multiprocessing pool
-    with Pool(processes=n_workers) as pool:
-        results = pool.map(multiply_row_chunk, chunks)
-    
-    # Concatenate results
-    return np.vstack(results)
+    try:
+        # Use multiprocessing pool with error handling
+        with Pool(processes=n_workers) as pool:
+            results = pool.map(multiply_row_chunk, chunks)
+        
+        # Concatenate results
+        return np.vstack(results)
+    except Exception as e:
+        # Fallback to serial computation if multiprocessing fails
+        import warnings
+        warnings.warn(f"Multiprocessing failed: {e}. Falling back to serial computation.")
+        return np.dot(A_local, B)
 
 
 def create_test_matrices(N, seed=42):
